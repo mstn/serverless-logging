@@ -2,7 +2,7 @@
 
 Some experiments with logging in serverless.
 
-Details [here](https://dev.to/mstn/serverless-logs)
+Details [here](https://dev.to/mstn/serverless-logs-271n)
 
 ## Getting started
 
