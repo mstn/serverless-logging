@@ -1,0 +1,80 @@
+
+service: examples
+
+provider:
+  name: aws
+  stage: dev
+  runtime: nodejs12.x
+  region: eu-west-1
+  memorySize: 256
+
+functions:
+  logger:
+    handler: logger/index.handler
+    description: fake logging to an external service
+    environment:
+      LOGGER_TIMEOUT: 5000
+    events:
+      - http: 
+          method: post 
+          path: /log
+  fun1:
+    handler: delayed-logging/index.handler
+    description: delayed logging
+    environment:
+      SERVER_URL:
+        Fn::Join:
+          - ""
+          - - "https://"
+            - Ref: "ApiGatewayRestApi"
+            - ".execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}"
+    events:
+      - http: 
+          method: get 
+          path: functions/1
+
+  fun2:
+    handler: blocking-logging/index.handler
+    description: blocking logging
+    environment:
+      SERVER_URL:
+        Fn::Join:
+          - ""
+          - - "https://"
+            - Ref: "ApiGatewayRestApi"
+            - ".execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}"
+    events:
+      - http: 
+          method: get 
+          path: functions/2
+
+  fun3:
+    handler: delayed-logging-with-await/index.handler
+    description: delayed logging with await
+    environment:
+      SERVER_URL:
+        Fn::Join:
+          - ""
+          - - "https://"
+            - Ref: "ApiGatewayRestApi"
+            - ".execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}"
+    events:
+      - http: 
+          method: get 
+          path: functions/3
+
+  fun4:
+    handler: delayed-logging-with-await-and-timeout/index.handler
+    description: delayed logging with await and timeout
+    environment:
+      LOGGER_TIMEOUT: 5000
+      SERVER_URL:
+        Fn::Join:
+          - ""
+          - - "https://"
+            - Ref: "ApiGatewayRestApi"
+            - ".execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}"
+    events:
+      - http: 
+          method: get 
+          path: functions/4
